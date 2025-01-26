@@ -72,8 +72,16 @@ setup(
     ],
     include_package_data=True,
     install_requires=load_requirements('requirements/base.in'),
+
     python_requires=">=3.5",
     zip_safe=False,
+    entry_points={
+        "lms.djangoapp": [
+            "message_q_app = message_q_app.apps:MessageQAppConfig",  # Full path to your app config
+        ],
+         "cms.djangoapp": [],
+    },
+    
     keywords='Django edx',
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -92,3 +100,5 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
 )
+#C:\Users\Dilip\plugin_for_messageQ\message_q_app
+#message_q_app
