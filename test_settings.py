@@ -39,8 +39,7 @@ LOCALE_PATHS = [
 ]
 
 
-
-ROOT_URLCONF = 'message_q_app.urls'
+ROOT_URLCONF =  'message_q_app.urls'
 
 SECRET_KEY = 'insecure-secret-key'
 
