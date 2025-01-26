@@ -57,17 +57,17 @@ class MessageQAppConfig(AppConfig):
 
                     # The python path (relative to this app) to the settings module for the relevant Project Type and Settings Type.
                     # Optional; Defaults to 'settings'.
-                    PluginSettings.RELATIVE_PATH: 'test_settings',
+                    # PluginSettings.RELATIVE_PATH: 'test_settings',
                 },
                 'common': {
-                    PluginSettings.RELATIVE_PATH: 'test_settings',
+                    # PluginSettings.RELATIVE_PATH: 'test_settings',
                 },
             }
         },
         
-        PluginSignals.CONFIG: {
-            'lms.djangoapp': {
-                PluginSignals.RELATIVE_PATH: 'signals',
-            }
-        }        
+        # PluginSignals.CONFIG: {
+        #     'lms.djangoapp': {
+        #         PluginSignals.RELATIVE_PATH: 'signals',
+        #     }
+        # }        
     }
