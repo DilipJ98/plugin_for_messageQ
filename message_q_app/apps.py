@@ -7,12 +7,15 @@ from edx_django_utils.plugins.constants import (
     PluginURLs, PluginSettings, PluginSignals
 )
 
+
+
 class MessageQAppConfig(AppConfig):
     """
     Configuration for the message_q_app Django application.
     """
 
     name = 'message_q_app'
+
     
  # Class attribute that configures and enables this app as a Plugin App.
     plugin_app = {
@@ -57,10 +60,10 @@ class MessageQAppConfig(AppConfig):
 
                     # The python path (relative to this app) to the settings module for the relevant Project Type and Settings Type.
                     # Optional; Defaults to 'settings'.
-                    # PluginSettings.RELATIVE_PATH: 'test_settings',
+                    PluginSettings.RELATIVE_PATH: 'settings',
                 },
                 'common': {
-                    # PluginSettings.RELATIVE_PATH: 'test_settings',
+                    PluginSettings.RELATIVE_PATH: 'settings',
                 },
             }
         },
