@@ -60,7 +60,7 @@ README = open(os.path.join(os.path.dirname(__file__), 'README.rst')).read()
 CHANGELOG = open(os.path.join(os.path.dirname(__file__), 'CHANGELOG.rst')).read()
 
 setup(
-    name='plugin_for_messageQ',
+    name='message_q_app',
     version=VERSION,
     description="""This plugin is used to listen the message queue""",
     long_description=README + '\n\n' + CHANGELOG,
@@ -81,7 +81,7 @@ setup(
         ],
          "cms.djangoapp": [],
     },
-    
+
     keywords='Django edx',
     classifiers=[
         'Development Status :: 3 - Alpha',

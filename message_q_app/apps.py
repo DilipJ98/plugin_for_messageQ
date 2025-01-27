@@ -38,7 +38,7 @@ class MessageQAppConfig(AppConfig):
 
                 # The regex to provide to django's urls.url.
                 # Optional; Defaults to r''.
-                PluginURLs.REGEX: r'^/message_q_app/',
+                # PluginURLs.REGEX: r'^/message_q_app/',
 
                 # The python path (relative to this app) to the URLs module to be plugged into the project.
                 # Optional; Defaults to 'urls'.
