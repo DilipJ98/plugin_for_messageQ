@@ -7,7 +7,7 @@ app_name = 'message_q_app'
 
 urlpatterns = [
     path('test/', test_view, name='test'),  # Your endpoint
-    # path('check-view', TemplateView.as_view(template_name="message_q_app/base.html"), name='index'),
+    path('home', TemplateView.as_view(template_name="message_q_app/base.html"), name='index'),
 ]
 
 
