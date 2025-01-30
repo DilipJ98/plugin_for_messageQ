@@ -11,12 +11,12 @@ def test_view(request):
     print(xblock_instance.boilerplate_code, " this is boilderplate code")
     xblock_instance.boilerplate_code = "this is new boilerplate code from api"
     try:
-        modulestore().update_item(xblock_instance)
+        modulestore().update_item(xblock_instance, 8)
         print("try executing after update method in try")
     except Exception as e:
         print("catch executing")
         print(e)
-        xblock_instance.save()
+        modulestore().update_item(xblock_instance, '8')
         print("after save")
         return JsonResponse({'message': f"Error while updating item: {e}"})
     return JsonResponse({'message': "api working"})
