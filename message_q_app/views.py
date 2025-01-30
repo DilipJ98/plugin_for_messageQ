@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from xblock.core import XBlock
-from xblock.runttime import Runtime
+from xblock.runtime import Runtime
 
 
 
