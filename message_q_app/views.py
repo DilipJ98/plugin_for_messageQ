@@ -9,9 +9,9 @@ def test_view(request):
 
     print(xblock_instance, " this is xblock instance..........1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1.1..11.1.1.1.1.1.1.1.1..1")
     print(xblock_instance.boilerplate_code, " this is boilderplate code")
-    xblock_instance.boilerplate_code = "this is new boilerplate code"
+    xblock_instance.boilerplate_code = "this is new boilerplate code from api"
     try:
-        modulestore().update_item(xblock_instance, request)
+        modulestore().update_item(xblock_instance)
         print("try executing after update method in try")
     except Exception as e:
         print("catch executing")
