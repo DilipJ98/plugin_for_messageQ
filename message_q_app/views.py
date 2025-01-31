@@ -12,9 +12,9 @@ def test_view(request):
         print(xblock_instance.marks, "intial marks of the student")
         xblock_instance.marks = 10
         xblock_instance.score = 6
+        modulestore().update_item(xblock_instance, 8)
         result = xblock_instance.updare_graders_of_student()
         print(result, "this is result of grade funtion............................................")
-        modulestore().update_item(xblock_instance, 8)
         print("try executing after update method in try")
     except Exception as e:
         print(e)
