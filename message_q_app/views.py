@@ -16,8 +16,8 @@ def test_view(request):
             usage_key_from_redis = redis_data.get("usage_key")
             student_id_from_redis = redis_data.get("student_id")
 
-            location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@e34b28140bb048a7aa6eac8d0f13e6a9"
-            usage_key = UsageKey.from_string(usage_key_from_redis)
+            location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
+            usage_key = UsageKey.from_string(location)
             xblock_instance = modulestore().get_item(usage_key)
             xblock_instance.marks = 10
             xblock_instance.score = body.get('score')
