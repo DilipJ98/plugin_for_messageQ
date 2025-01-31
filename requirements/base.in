@@ -1,5 +1,7 @@
 # Core requirements for using this application
 -c constraints.txt
 
-Django>=1.11              # Web application framework
+# Web application framework
+Django>=1.11              
 
+redis>=4.0.0
