@@ -20,6 +20,7 @@ def test_view(request):
             usage_key = UsageKey.from_string(location)
             xblock_instance = modulestore().get_item(usage_key)
             xblock_instance.marks = 10
+            xblock_instance.boilerplate_code = "boilerplate code"
             xblock_instance.score = body.get('score')
             xblock_instance.is_correct = body.get('is_correct')
             xblock_instance.message = body.get('message')
