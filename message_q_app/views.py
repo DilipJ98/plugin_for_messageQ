@@ -23,9 +23,9 @@ def test_view(request):
             xblock_instance.score = body.get('score')
             xblock_instance.is_correct = body.get('is_correct')
             xblock_instance.message = body.get('message')
-            
+
             modulestore().update_item(xblock_instance, student_id_from_redis)
-            result = xblock_instance.updare_graders_of_student()
+            result = xblock_instance.update_grades_of_student()
             print(result, "this is result of grade funtion............................................")
             print("try executing after update method in try")
     except Exception as e:
