@@ -8,10 +8,12 @@ def test_view(request):
         usage_key = UsageKey.from_string(location)
         xblock_instance = modulestore().get_item(usage_key)
         print(xblock_instance, " this is xblock instance.1.1.1.1.11.1..11..1.1111111111111111111111111111111111")
+        print(xblock_instance.score, "intial score of the student")
         print(xblock_instance.marks, "intial marks of the student")
-        result = xblock_instance.database_connection_fun()
-        print(result, "this is result of the database connection............................................")
-        xblock_instance.marks = 3
+        result = xblock_instance.updare_graders_of_student()
+        print(result, "this is result of grade funtion............................................")
+        xblock_instance.marks = 10
+        xblock_instance.score = 6
         modulestore().update_item(xblock_instance, 8)
         print("try executing after update method in try")
     except Exception as e:
