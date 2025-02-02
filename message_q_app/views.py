@@ -23,11 +23,11 @@ def test_view(request):
             print("after getting xblock instance............................................")
             xblock_instance.marks = 10
             xblock_instance.boilerplate_code = "boilerplate code"
-            score = body.get('score')
-            is_correct = body.get('is_correct')
-            message = body.get('message')
+            xblock_instance.score = body.get('score')
+            xblock_instance.is_correct = body.get('is_correct')
+            xblock_instance.message = body.get('message')
             print("before update method............................................")                
-            result = xblock_instance.update_grades_of_student(score, is_correct, message)
+            result = xblock_instance.update_grades_of_student()
             modulestore().update_item(xblock_instance, student_id_from_redis)
             print("after update method............................................")
             print(result, "this is result of grade funtion............................................")
