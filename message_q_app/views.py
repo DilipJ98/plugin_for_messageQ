@@ -40,6 +40,12 @@ def test_view(request):
             student_module.state = json.dumps(state)
             student_module.save()
 
+            #get updated values
+            updated_student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
+            updated_state = json.loads(updated_student_module.state)
+            
+            print(updated_state.get('score'), updated_state.get('message'), " updated state from student module")
+
             print("data saved in student module")
             print("try executing after update method in try")
     except Exception as e:
