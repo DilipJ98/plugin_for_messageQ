@@ -20,17 +20,21 @@ def test_view(request):
             location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
             usage_key = UsageKey.from_string(location)
             xblock_instance = modulestore().get_item(usage_key)
-            print("after getting xblock instance............................................")
             xblock_instance.marks = 10
             xblock_instance.boilerplate_code = "boilerplate code"
             xblock_instance.score = body.get('score')
             xblock_instance.is_correct = body.get('is_correct')
             xblock_instance.message = body.get('message')
-            print("before update method............................................")                
             result = xblock_instance.update_grades_of_student()
             modulestore().update_item(xblock_instance, student_id_from_redis)
-            print("after update method............................................")
-            print(result, "this is result of grade funtion............................................")
+            print("try executing after update method in try")
+            print(xblock_instance.runtime, "this is runtime of xblock instance............................................")
+            runtime = xblock_instance.runtime
+            if runtime:
+                print(runtime, "runtime is present")
+            else:
+                print("runtime is not present")
+
             print("try executing after update method in try")
     except Exception as e:
         print(e, "  something is woring in the catch block so exec block is executing..................################################3")
