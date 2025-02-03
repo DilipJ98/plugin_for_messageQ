@@ -22,19 +22,20 @@ def test_view(request):
             xblock_instance = modulestore().get_item(usage_key)
             xblock_instance.marks = 10
             xblock_instance.boilerplate_code = "boilerplate code"
-            # xblock_instance.score = body.get('score')
-            # xblock_instance.is_correct = body.get('is_correct')
-            # xblock_instance.message = body.get('message')
-            result = xblock_instance.update_grades_of_student()
+            score = body.get('score')
+            is_correct = body.get('is_correct')
+            message = body.get('message')
+            result = xblock_instance.update_grades_of_student(score, is_correct, message, student_id_from_redis)
+            print(result, " this is result of update_grades_of_student method............................................")
             print("try executing after update method in try")
-            print(xblock_instance.runtime, "this is runtime of xblock instance............................................")
-            runtime = xblock_instance.runtime
-            if runtime:
-                print(runtime, "runtime is present")
-                runtime.set_user_state(xblock_instance, {'score': body.get('score'), 'is_correct': body.get('is_correct'), 'message': body.get('message')}, user_id = student_id_from_redis)
-                print("user details updated.....1.1.11.1.1.1..1.1.1.1#####################33")
-            else:
-                print("runtime is not present")
+            # print(xblock_instance.runtime.get_runtime(), "this is runtime of xblock instance............................................")
+            # runtime = xblock_instance.runtime
+            # if runtime:
+            #     print(runtime, "runtime is present")
+            #     runtime.set_user_state(xblock_instance, {'score': body.get('score'), 'is_correct': body.get('is_correct'), 'message': body.get('message')}, user_id = student_id_from_redis)
+            #     print("user details updated.....1.1.11.1.1.1..1.1.1.1#####################33")
+            # else:
+            #     print("runtime is not present")
             modulestore().update_item(xblock_instance, student_id_from_redis)
             print("try executing after update method in try")
     except Exception as e:
