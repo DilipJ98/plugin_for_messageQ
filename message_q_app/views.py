@@ -27,8 +27,7 @@ def test_view(request):
             score = body.get('score')
             is_correct = body.get('is_correct')
             message = body.get('message')
-            results = xblock_instance.update_grades_of_student()
-            print(results, " resulsts from update fun ##############################")
+
             modulestore().update_item(xblock_instance, student_id_from_redis)
             print("data saved in modulestore")
             
@@ -39,14 +38,15 @@ def test_view(request):
             state['message'] = message
             student_module.state = json.dumps(state)
             student_module.save()
-
+            print("data saved in student module")
             #get updated values
             updated_student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
             updated_state = json.loads(updated_student_module.state)
             
             print(updated_state.get('score'), updated_state.get('message'), " updated state from student module")
-
-            print("data saved in student module")
+            results = xblock_instance.update_grades_of_student()
+            print(results, " resulsts from update fun ##############################")
+            
             print("try executing after update method in try")
     except Exception as e:
         print(e, "  something is woring in the catch block so exec block is executing..................################################3")
