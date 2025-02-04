@@ -36,48 +36,18 @@ def test_view(request):
             modulestore().update_item(xblock_instance, student_id_from_redis)
             print("data saved in modulestore")
             
-            # #xblockuser state client
-            # state_client = XBlockUserStateClient()
-            # print("state client object created.............")
-            # existing_state = state_client.get(student_id_from_redis, usage_key) or {}
-            # print(existing_state, " existing state from xblockuserstateclient from views####")
-            # if not existing_state:
-            #     print("No existing state found, creating a new one.")
-            #     existing_state = {"score": 0, "is_correct": False, "message": ""}
-            # existing_state["score"] = score
-            # existing_state["is_correct"] = is_correct
-            # existing_state["message"] = message
-            # print("daat assigned to existing state............")
-            # state_client.set(student_id_from_redis, usage_key, existing_state)
-            # print("data saved in xblockuserstateclient")
-
-            # #retrieve data from xblockuserstateclient
-            # user_state = state_client.get(student_id_from_redis, usage_key)
-            # print("data retrieved from xblockuserstateclient")
-            # print(user_state.get('score'), user_state.get('is_correct'), user_state.get('message'), " user state from xblockuserstateclient from views####")
-
-
             # #student module
             student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
             state = json.loads(student_module.state)
             state['score'] = score
             state['message'] = message
+            state['is_correct'] = is_correct
             student_module.state = json.dumps(state)
             student_module.save()
             print("data saved in student module")
 
-            #get updated values
-            updated_student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
-            updated_state = json.loads(updated_student_module.state)
-            print(updated_state.get('score'), updated_state.get('message'), " updated state from student module")
-            
-            #update grades method of xblock
-            # results = xblock_instance.update_grades_of_student(student_id_from_redis, usage_key)
-            # print(results, " resulsts from update fun ##############################")
-            
-            print("try executing after update method in try")
     except Exception as e:
-        print( type(e), e,"  :something is woring in the catch block so exec block is executing..................################################3")
+        print( type(e), e)
         traceback.print_exc()
         return JsonResponse({'message': f"Error while updating item: {e}"})
     return JsonResponse({'message': "api working"})
