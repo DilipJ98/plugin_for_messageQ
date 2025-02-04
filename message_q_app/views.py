@@ -37,7 +37,7 @@ def test_view(request):
             print("data saved in modulestore")
             
             #xblockuser state client
-            state_client = XBlockUserStateClient()
+            state_client = XBlockUserStateClient(None)
             print("state client object created.............")
             existing_state = state_client.get(student_id_from_redis, usage_key) or {}
             print(existing_state, " existing state from xblockuserstateclient from views####")
