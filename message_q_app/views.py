@@ -3,6 +3,7 @@ from xmodule.modulestore.django import modulestore
 from opaque_keys.edx.keys import UsageKey
 from lms.djangoapps.courseware.models import StudentModule
 from lms.djangoapps.courseware.user_state_client import XBlockUserStateClient
+from xblock.fields import Integer, Scope, String, Boolean
 
 
 import redis
@@ -37,9 +38,9 @@ def test_view(request):
             print("data saved in modulestore")
             
             #xblockuser state client
-            state_client = XBlockUserStateClient(None)
+            state_client = XBlockUserStateClient()
             print("state client object created.............")
-            existing_state = state_client.get(student_id_from_redis, usage_key) or {}
+            existing_state = state_client.get(student_id_from_redis, usage_key, scope = Scope.user_state) or {}
             print(existing_state, " existing state from xblockuserstateclient from views####")
             if not existing_state:
                 print("No existing state found, creating a new one.")
@@ -48,11 +49,11 @@ def test_view(request):
             existing_state["is_correct"] = is_correct
             existing_state["message"] = message
             print("daat assigned to existing state............")
-            state_client.set(student_id_from_redis, usage_key, existing_state)
+            state_client.set(student_id_from_redis, usage_key, existing_state, scope = Scope.user_state)
             print("data saved in xblockuserstateclient")
 
             #retrieve data from xblockuserstateclient
-            user_state = state_client.get(student_id_from_redis, usage_key)
+            user_state = state_client.get(student_id_from_redis, usage_key, scope = Scope.user_state)
             print("data retrieved from xblockuserstateclient")
             print(user_state.get('score'), user_state.get('is_correct'), user_state.get('message'), " user state from xblockuserstateclient from views####")
 
