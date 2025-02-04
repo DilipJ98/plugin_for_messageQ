@@ -23,6 +23,9 @@ def test_view(request):
             student_id_from_redis = redis_data.get("student_id")
             location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
             usage_key = UsageKey.from_string(location)
+            print(f"Usage Key from Redis: {usage_key_from_redis}")
+            print(f"Student ID from Redis: {student_id_from_redis}")
+            print(f"usage key: {usage_key}")
             xblock_instance = modulestore().get_item(usage_key)
             xblock_instance.marks = 10
             xblock_instance.boilerplate_code = "boilerplate code"
@@ -38,6 +41,9 @@ def test_view(request):
             print("state client object created.............")
             existing_state = state_client.get(student_id_from_redis, usage_key) or {}
             print(existing_state, " existing state from xblockuserstateclient from views####")
+            if not existing_state:
+                print("No existing state found, creating a new one.")
+                existing_state = {"score": 0, "is_correct": False, "message": ""}
             existing_state["score"] = score
             existing_state["is_correct"] = is_correct
             existing_state["message"] = message
@@ -49,7 +55,7 @@ def test_view(request):
             user_state = state_client.get(student_id_from_redis, usage_key)
             print("data retrieved from xblockuserstateclient")
             print(user_state.get('score'), user_state.get('is_correct'), user_state.get('message'), " user state from xblockuserstateclient from views####")
-            
+
 
             # #student module
             # student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
