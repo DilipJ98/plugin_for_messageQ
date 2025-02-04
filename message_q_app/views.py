@@ -35,18 +35,21 @@ def test_view(request):
             
             #xblockuser state client
             state_client = XBlockUserStateClient()
+            print("state client object created.............")
             existing_state = state_client.get(student_id_from_redis, usage_key) or {}
+            print(existing_state, " existing state from xblockuserstateclient from views####")
             existing_state["score"] = score
             existing_state["is_correct"] = is_correct
             existing_state["message"] = message
-
+            print("daat assigned to existing state............")
             state_client.set(student_id_from_redis, usage_key, existing_state)
-
+            print("data saved in xblockuserstateclient")
 
             #retrieve data from xblockuserstateclient
             user_state = state_client.get(student_id_from_redis, usage_key)
+            print("data retrieved from xblockuserstateclient")
             print(user_state.get('score'), user_state.get('is_correct'), user_state.get('message'), " user state from xblockuserstateclient from views####")
-
+            
 
             # #student module
             # student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
