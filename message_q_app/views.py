@@ -7,9 +7,11 @@ import traceback
 
 import redis
 import json
-
+from celery import shared_task
 
 redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, decode_responses=True)
+
+
 
 def test_view(request):
     try:
@@ -51,3 +53,10 @@ def test_view(request):
         traceback.print_exc()
         return JsonResponse({'message': f"Error while updating item: {e}"})
     return JsonResponse({'message': "api working"})
+
+
+@shared_task
+def listen(data):
+    print("Hurray inside listen###########")
+    print(data, " data from messageQ")
+    return data
