@@ -12,10 +12,11 @@ from celery import shared_task
 redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, decode_responses=True)
 
 @shared_task(queue="edx.lms.core.default")
-def test_view(message):
+def test_view(message_queue):
     print("test_view called..###!!@@@#####@@@@@$$$$$$$$$")
     try:
-        submission_id = message.get('x-submission-id')
+        payload = message_queue[0]
+        submission_id = payload.get('x-submission-id')
         redis_data = redis_client.hgetall(submission_id)
         if redis_data:
             #getting the usage_key and student_id from redis
@@ -31,10 +32,10 @@ def test_view(message):
             modulestore().update_item(xblock_instance, student_id_from_redis)
             
             #for xblock user specific details
-            score = message.get('score')
-            is_correct = message.get('is_correct')
-            message = message.get('message')
-            print(message, " message...................")
+            score = payload.get('score')
+            is_correct = payload.get('is_correct')
+            message = payload.get('message')
+            print(payload, " message...................")
             print("score", score, is_correct, message, " from test_view..........................###")
 
             # #student module
