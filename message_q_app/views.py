@@ -14,8 +14,18 @@ redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, d
 @shared_task(queue="edx.lms.core.default")
 def test_view(message_queue):
     print("test_view called..###!!@@@#####@@@@@$$$$$$$$$")
+    print(type(message_queue), " this is type of messageQQQQQQQQQQQQQQQQQQQQQQQQQ")
+    print(message_queue, " this is message QQQQQQQQQQQQQQQ")
+
+
     try:
-        payload = message_queue[0]
+        if isinstance(message_queue, str):
+            message_queue = json.loads(message_queue)
+        if isinstance(message_queue, list):
+            payload = message_queue[0]
+        else:
+            payload = message_queue 
+
         submission_id = payload.get('x-submission-id')
         redis_data = redis_client.hgetall(submission_id)
         if redis_data:
