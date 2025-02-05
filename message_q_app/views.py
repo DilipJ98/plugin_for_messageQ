@@ -55,7 +55,7 @@ def test_view(request):
     return JsonResponse({'message': "api working"})
 
 
-@shared_task
+@shared_task(queue="edx.lms.core.default")
 def listen(data):
     print("Hurray inside listen###########")
     print(data, " data from messageQ")
