@@ -34,6 +34,8 @@ def test_view(message):
             score = message.get('score')
             is_correct = message.get('is_correct')
             message = message.get('message')
+            print(message, " message...................")
+            print("score", score, is_correct, message, " from test_view..........................###")
 
             # #student module
             student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
@@ -43,6 +45,7 @@ def test_view(message):
             state['is_correct'] = is_correct
             student_module.state = json.dumps(state)
             student_module.save()
+            print("student_module updated............")
 
     except Exception as e:
         print( type(e), e)
