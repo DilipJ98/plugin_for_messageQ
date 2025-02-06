@@ -9,7 +9,7 @@ import redis
 import json
 from celery import shared_task
 
-from lms.djangoapps.grades.models import Score
+
 from student.models import CourseEnrollment
 from django.contrib.auth.models import User
 from django.db import transaction
