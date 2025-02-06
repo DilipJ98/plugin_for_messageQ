@@ -70,15 +70,17 @@ def for_api(request):
             location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
             usage_key = UsageKey.from_string(location)
             student = User.objects.get(id=student_id_from_redis)
-            with transaction.atomic():
-                student_module, created = StudentModule.objects.update_or_create(
-                student=student,
-                module_state_key=usage_key,  
-                defaults={
-                    "grade": data.get("score"),           
-                    "max_grade": data.get("maxscore")    
-                }
+            # with transaction.atomic():
+            student_module, created = StudentModule.objects.update_or_create(
+            student=student,
+            module_state_key=usage_key,  
+            defaults={
+                "grade": data.get("score"),           
+                "max_grade": data.get("maxscore")    
+            }
             )
+            print(student_module, " this is student module@@@#################")
+            print(created, " this tell us that created or not@@#######################")
             return JsonResponse({'message': 'success'}, status = 200)
         return JsonResponse({'message': 'submission id missing in redis'}, status = 404)
     except json.JSONDecodeError:
