@@ -10,7 +10,6 @@ import json
 from celery import shared_task
 
 
-from student.models import CourseEnrollment
 from django.contrib.auth.models import User
 from django.db import transaction
 
