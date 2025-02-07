@@ -27,8 +27,8 @@ def test_view(message_queue):
             #getting the usage_key and student_id from redis
             usage_key_from_redis = redis_data.get("usage_key")
             student_id_from_redis = redis_data.get("student_id")
-            location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
-            usage_key = UsageKey.from_string(location)
+            # location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
+            usage_key = UsageKey.from_string(usage_key_from_redis)
             
             #for xblock scop type content 
             xblock_instance = modulestore().get_item(usage_key)
@@ -67,8 +67,8 @@ def for_api(request):
         if redis_data:
             usage_key_from_redis = redis_data.get("usage_key")
             student_id_from_redis = redis_data.get("student_id")
-            location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
-            usage_key = UsageKey.from_string(location)
+            # location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
+            usage_key = UsageKey.from_string(usage_key_from_redis)
             student = User.objects.get(id=student_id_from_redis)
             # with transaction.atomic():
             student_module, created = StudentModule.objects.update_or_create(
