@@ -83,7 +83,7 @@ def for_api(request):
             enqueue_subsection_update(
                 sender=None,
                 user_id=int(student_id_from_redis),
-                course_id=usage_key.course_key,
+                course_id=str(usage_key.course_key),
                 usage_id=usage_key
             )
 
