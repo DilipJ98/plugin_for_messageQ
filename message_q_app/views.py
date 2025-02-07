@@ -9,7 +9,7 @@ import redis
 import json
 from celery import shared_task
 from lms.djangoapps.grades.signals.signals import PROBLEM_WEIGHTED_SCORE_CHANGED
-
+from openedx.core.djangoapps.grades.signals.handlers import enqueue_subsection_update
 
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -81,15 +81,16 @@ def for_api(request):
             }
             )
             print("after grade assign")
-            PROBLEM_WEIGHTED_SCORE_CHANGED.send(
-                sender=None,  
+            
+            enqueue_subsection_update(
                 user_id=int(student_id_from_redis),
                 course_id=usage_key.course_key,
-                problem_usage_key=usage_key,  
-                usage_id=usage_key,  
+                usage_id=usage_key,
+                problem_usage_key=usage_key,
                 weighted_earned=data.get("score"),
                 weighted_possible=data.get("maxscore")
             )
+
 
             print("after publising to edx")
             print(student_module, " this is student module@@@#################")
