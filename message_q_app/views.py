@@ -8,7 +8,8 @@ import traceback
 import redis
 import json
 from celery import shared_task
-from lms.djangoapps.grades.signals import PROBLEM_WEIGHTED_SCORE_CHANGED
+from lms.djangoapps.grades.signals.signals import PROBLEM_WEIGHTED_SCORE_CHANGED
+
 
 from django.contrib.auth.models import User
 from django.db import transaction
