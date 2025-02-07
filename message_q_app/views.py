@@ -84,7 +84,7 @@ def for_api(request):
             
             PROBLEM_WEIGHTED_SCORE_CHANGED.send(
                 sender=None,  
-                user=student,
+                user_id=int(student_id_from_redis),
                 course_id=usage_key.course_key,
                 problem_usage_key=usage_key,
                 weighted_earned= data.get("score"),
