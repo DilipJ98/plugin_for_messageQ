@@ -13,7 +13,7 @@ from django.contrib.auth.models import User
 from django.db import transaction
 from lms.djangoapps.grades.signals.handlers import enqueue_subsection_update
 from django.utils import timezone
-
+from lms.djangoapps.grades.constants import ScoreDatabaseTableEnum
 
 redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, decode_responses=True)
 
@@ -86,7 +86,8 @@ def for_api(request):
                 user_id=int(student_id_from_redis),
                 course_id=str(usage_key.course_key),
                 usage_id=usage_key,
-                modified=timezone.now()
+                modified=timezone.now(),
+                score_db_table=ScoreDatabaseTableEnum.submissions
             )
 
             print("after grade assign")
