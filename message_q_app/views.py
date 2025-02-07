@@ -81,14 +81,14 @@ def for_api(request):
             }
             )
             print("after grade assign")
-            
             PROBLEM_WEIGHTED_SCORE_CHANGED.send(
                 sender=None,  
                 user_id=int(student_id_from_redis),
                 course_id=usage_key.course_key,
-                problem_usage_key=usage_key,
-                weighted_earned= data.get("score"),
-                weighted_possible= data.get("maxscore")
+                problem_usage_key=usage_key,  
+                usage_id=usage_key,  
+                weighted_earned=data.get("score"),
+                weighted_possible=data.get("maxscore")
             )
 
             print("after publising to edx")
