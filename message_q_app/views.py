@@ -11,7 +11,7 @@ from celery import shared_task
 
 from django.contrib.auth.models import User
 from django.db import transaction
-
+from lms.djangoapps.grades.signals.handlers import enqueue_subsection_update
 
 redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, decode_responses=True)
 
@@ -78,6 +78,15 @@ def for_api(request):
                 "max_grade": data.get("maxscore")    
             }
             )
+            
+            
+            enqueue_subsection_update(
+                sender=None,
+                user=student,
+                course_id=usage_key.course_key,
+                usage_key=usage_key
+            )
+
             print("after grade assign")
             
             print("after publising to edx")
