@@ -8,7 +8,7 @@ import traceback
 import redis
 import json
 from celery import shared_task
-
+from lms.djangoapps.grades.signals import PROBLEM_WEIGHTED_SCORE_CHANGED
 
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -79,6 +79,18 @@ def for_api(request):
                 "max_grade": data.get("maxscore")    
             }
             )
+            print("after grade assign")
+            
+            PROBLEM_WEIGHTED_SCORE_CHANGED.send(
+                sender=None,  
+                user=student,
+                course_id=usage_key.course_key,
+                problem_usage_key=usage_key,
+                weighted_earned= data.get("score"),
+                weighted_possible= data.get("maxscore")
+            )
+
+            print("after publising to edx")
             print(student_module, " this is student module@@@#################")
             print(created, " this tell us that created or not@@#######################")
             return JsonResponse({'message': 'success'}, status = 200)
