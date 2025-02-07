@@ -79,10 +79,10 @@ def for_api(request):
             }
             )
             
-            
+
             enqueue_subsection_update(
                 sender=None,
-                user=student,
+                user_id=int(student_id_from_redis),
                 course_id=usage_key.course_key,
                 usage_key=usage_key
             )
@@ -99,5 +99,5 @@ def for_api(request):
     except Exception as e:
         print(e)
         traceback.print_exc()
-        return JsonResponse({'message': e}, status = 500)
+        return JsonResponse({'message': str(e)}, status = 500)
     
