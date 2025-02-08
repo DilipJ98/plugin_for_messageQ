@@ -94,7 +94,7 @@ def for_api(request):
 
             recalculate_subsection_grade_v3.apply_async(kwargs={
                 "user_id": int(student_id_from_redis),
-                "course_id": "cklabs+XBLOCK002+202_T1",
+                "course_id": "course-v1:cklabs+XBLOCK002+202_T1",
                 "usage_id": str(usage_key),
                 "only_if_higher": False
             })
