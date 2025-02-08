@@ -91,7 +91,14 @@ def for_api(request):
             #     score_db_table=ScoreDatabaseTableEnum.submissions
             # )
 
-            recalculate_subsection_grade_v3.apply_async(args=[int(student_id_from_redis), str(usage_key)])
+
+            recalculate_subsection_grade_v3.apply_async(kwargs={
+                "user_id": int(student_id_from_redis),
+                "course_id": "cklabs+XBLOCK002+202_T1",
+                "usage_id": str(usage_key),
+                "only_if_higher": False
+            })
+
 
             print("after grade assign")
             print("after publising to edx")
