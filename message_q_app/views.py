@@ -85,7 +85,7 @@ def for_api(request):
                 sender=None,
                 user_id=int(student_id_from_redis),
                 course_id=str(usage_key.course_key),
-                usage_id=usage_key,
+                usage_id=str(usage_key),
                 modified=timezone.now(),
                 score_db_table=ScoreDatabaseTableEnum.submissions
             )
