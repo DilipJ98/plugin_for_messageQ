@@ -14,7 +14,7 @@ from django.db import transaction
 from lms.djangoapps.grades.signals.handlers import enqueue_subsection_update
 from django.utils import timezone
 from lms.djangoapps.grades.tasks import recalculate_subsection_grade_v3
-
+import uuid
 
 redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, decode_responses=True)
 
@@ -96,7 +96,8 @@ def for_api(request):
                 "user_id": int(student_id_from_redis),
                 "course_id": "course-v1:cklabs+XBLOCK002+202_T1",
                 "usage_id": str(usage_key),
-                "only_if_higher": False
+                "only_if_higher": False,
+                "event_transaction_id": str(uuid.uuid4()) 
             })
 
 
