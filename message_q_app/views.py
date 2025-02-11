@@ -2,18 +2,15 @@ from django.http import JsonResponse
 from xmodule.modulestore.django import modulestore
 from opaque_keys.edx.keys import UsageKey
 from lms.djangoapps.courseware.models import StudentModule
-# from lms.djangoapps.courseware.user_state_client import XBlockUserStateClient
 import traceback
-
 import redis
 import json
 from celery import shared_task
-
 from django.contrib.auth.models import User
 from django.db import transaction
-from lms.djangoapps.grades.signals.handlers import enqueue_subsection_update
 from django.utils import timezone
 from lms.djangoapps.grades.tasks import recalculate_subsection_grade_v3
+from lms.djangoapps.grades.tasks import ScoreDatabaseTableEnum
 import uuid
 
 redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, decode_responses=True)
@@ -32,7 +29,7 @@ def test_view(message_queue):
             # location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
             usage_key = UsageKey.from_string(usage_key_from_redis)
             
-            #for xblock scop type content 
+            #for xblock scope type content 
             xblock_instance = modulestore().get_item(usage_key)
             xblock_instance.marks = 10
             xblock_instance.boilerplate_code = "boilerplate code"
@@ -67,42 +64,49 @@ def for_api(request):
         submission_id = data.get('x-submission-id')
         redis_data = redis_client.hgetall(submission_id)
         if redis_data:
+            #redis related
             usage_key_from_redis = redis_data.get("usage_key")
             student_id_from_redis = redis_data.get("student_id")
-            # location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
-            usage_key = UsageKey.from_string(usage_key_from_redis)
-            student = User.objects.get(id=student_id_from_redis)
-            # with transaction.atomic():
+
+            block_usage_key = UsageKey.from_string(usage_key_from_redis)
+            
+            #add or update grades for student
             student_module, created = StudentModule.objects.update_or_create(
-            student=student,
-            module_state_key=usage_key,  
+            student_id = int(student_id_from_redis),
+            module_state_key=str(block_usage_key),  
             defaults={
                 "grade": data.get("score"),           
-                "max_grade": data.get("maxscore")    
+                "max_grade": data.get("maxscore")   , 
+                "modified": timezone.now()
             }
             )
             
-            # enqueue_subsection_update(
-            #     sender=None,
-            #     user_id=int(student_id_from_redis),
-            #     course_id=str(usage_key.course_key),
-            #     usage_id=str(usage_key),
-            #     modified=timezone.now(),
-            #     score_db_table=ScoreDatabaseTableEnum.submissions
-            # )
-
-
-            recalculate_subsection_grade_v3.apply_async(kwargs={
-                "user_id": int(student_id_from_redis),
-                "course_id": "course-v1:cklabs+XBLOCK002+202_T1",
-                "usage_id": str(usage_key),
-                "only_if_higher": False,
-                "event_transaction_id": str(uuid.uuid4()) 
-            })
-
-
-            print("after grade assign")
-            print("after publising to edx")
+            #module store
+            xblock_instance = modulestore().get_item(block_usage_key)
+            course_id = xblock_instance.course_id
+            print(course_id, " course id#################################################")
+            #fetching the modified time from student module
+            modified_time = StudentModule.objects.filter(
+                student_id = int(student_id_from_redis),
+                course_id = course_id,
+                module_state_key = str(block_usage_key)  
+            ).values_list("modified", flat=True).first()    
+                
+            if modified_time:
+                expected_timestamp = modified_time.timestamp()
+                print("inside modified time")  
+                #if modified time is there we are calling recalcuate
+                recalculate_subsection_grade_v3(
+                    user_id = int(student_id_from_redis),
+                    course_id = course_id,
+                    usage_id = str(block_usage_key),
+                    only_if_higher=False,
+                    event_transaction_id=str(uuid.uuid4()),
+                    score_db_table=ScoreDatabaseTableEnum.courseware_student_module,
+                    expected_modified_time=expected_timestamp,
+                    score_deleted=False
+                )
+            
             print(student_module, " this is student module@@@#################")
             print(created, " this tell us that created or not@@#######################")
             return JsonResponse({'message': 'success'}, status = 200)
