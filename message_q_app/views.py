@@ -27,14 +27,12 @@ def test_view(message_queue):
             #getting the usage_key and student_id from redis
             usage_key_from_redis = redis_data.get("usage_key")
             student_id_from_redis = redis_data.get("student_id")
-            # location = "block-v1:cklabs+XBLOCK002+202_T1+type@textxblock+block@"+usage_key_from_redis
+
             usage_key = UsageKey.from_string(usage_key_from_redis)
             
             #for xblock scope type content 
             xblock_instance = modulestore().get_item(usage_key)
-            xblock_instance.marks = 10
-            xblock_instance.boilerplate_code = "boilerplate code"
-            modulestore().update_item(xblock_instance, student_id_from_redis)
+            course_id = xblock_instance.course_id
             
             #for xblock user specific details
             score = payload.get('score')
@@ -49,14 +47,44 @@ def test_view(message_queue):
             state['is_correct'] = is_correct
             student_module.state = json.dumps(state)
             student_module.save()
-            print("student_module updated............")
 
+            #add or update grades for student
+            student_module, created = StudentModule.objects.update_or_create(
+            student_id = int(student_id_from_redis),
+            module_state_key=str(usage_key),  
+            defaults={
+                "grade": payload.get("score"),           
+                "max_grade": payload.get("maxscore")   , 
+                "modified": timezone.now()
+            }
+            )
+
+            #get the modified time
+            modified_time = StudentModule.objects.filter(
+                student_id = int(student_id_from_redis),
+                course_id = course_id,
+                module_state_key = str(usage_key)  
+            ).values_list("modified", flat=True).first()    
+            
+            if modified_time:
+                expected_timestamp = modified_time.timestamp()
+                print("inside modified time")  
+                #if modified time is there we are calling recalcuate
+                if isinstance(course_id, CourseLocator):
+                    course_id = str(course_id)
+                recalculate_subsection_grade_v3(
+                    user_id = int(student_id_from_redis),
+                    course_id = course_id,
+                    usage_id = str(usage_key),
+                    only_if_higher=False,
+                    event_transaction_id=str(uuid.uuid4()),
+                    score_db_table=ScoreDatabaseTableEnum.courseware_student_module,
+                    expected_modified_time=expected_timestamp,
+                    score_deleted=False
+                )
     except Exception as e:
         print( type(e), e)
         traceback.print_exc()
-        return JsonResponse({'message': f"Error while updating item: {e}"})
-    return JsonResponse({'message': "api working"})
-
 
 
 def for_api(request):
