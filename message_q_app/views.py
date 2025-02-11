@@ -11,6 +11,7 @@ from django.db import transaction
 from django.utils import timezone
 from lms.djangoapps.grades.tasks import recalculate_subsection_grade_v3
 from lms.djangoapps.grades.tasks import ScoreDatabaseTableEnum
+from opaque_keys.edx.locations import CourseLocator
 import uuid
 
 redis_client = redis.StrictRedis(host='host.docker.internal', port=6379, db=0, decode_responses=True)
@@ -96,6 +97,8 @@ def for_api(request):
                 expected_timestamp = modified_time.timestamp()
                 print("inside modified time")  
                 #if modified time is there we are calling recalcuate
+                if isinstance(course_id, CourseLocator):
+                    course_id = str(course_id)
                 recalculate_subsection_grade_v3(
                     user_id = int(student_id_from_redis),
                     course_id = course_id,
