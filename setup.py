@@ -100,5 +100,4 @@ setup(
         'Programming Language :: Python :: 3.8',
     ],
 )
-#C:\Users\Dilip\plugin_for_messageQ\message_q_app
-#message_q_app
+
