@@ -32,7 +32,8 @@ def update_student_grade_view(message_queue):
             #for xblock scope type content 
             xblock_instance = modulestore().get_item(usage_key)
             course_id = xblock_instance.course_id
-            
+            max_marks = xblock_instance.marks
+
             #for xblock user specific details
             score = payload.get('score')
             is_correct = payload.get('is_correct')
@@ -44,6 +45,7 @@ def update_student_grade_view(message_queue):
             state['score'] = score
             state['message'] = message
             state['is_correct'] = is_correct
+            # state['is_submission_graded'] = True
             student_module.state = json.dumps(state)
             student_module.save()
 
@@ -52,8 +54,8 @@ def update_student_grade_view(message_queue):
             student_id = int(student_id_from_redis),
             module_state_key=str(usage_key),  
             defaults={
-                "grade": payload.get("score"),           
-                "max_grade": payload.get("maxscore")   , 
+                "grade": score,           
+                "max_grade": max_marks, 
                 "modified": timezone.now()
             }
             )
@@ -81,6 +83,17 @@ def update_student_grade_view(message_queue):
                     expected_modified_time=expected_timestamp,
                     score_deleted=False
                 )
+                
+            #update the xblock filed is_submission_graded to true after succssfull grading
+            student_module = StudentModule.objects.get(student_id=student_id_from_redis, module_state_key=usage_key)
+            state = json.loads(student_module.state)
+            state['is_submission_graded'] = True
+            student_module.state = json.dumps(state)
+            student_module.save()
+
+            #delete the redis data after grading
+            redis_client.delete(submission_id)
+
     except Exception as e:
         print( type(e), e)
         traceback.print_exc()
